@@ -1,63 +1,44 @@
-<project name="hidpunk" default="all" basedir=".">
+<project name="hidpunk" default="dist" basedir=".">
 	<description>
-    	Build a jar file for Cogmac HidPunk library.
-    </description>
+		Hidpunk USB Human-Input-Device interface library.
+	</description>
 
 	<!-- set global properties for this build -->
-	<property name="app.name"		value="--" />
-	<property name="app.main"		value="--" />
-	
-	<property name="domain.name"	value="bits" />
-	<property name="dist.dir"		value="dist" />
-	<property name="dist.name"		value="${domain.name}_${ant.project.name}" />
-	
-	<property name="src.dir"		   value="src" />
-	<property name="build.dir"		   value="build" />
-	<property name="src.drivers.dir"   value="src_drivers" />
-	<property name="build.drivers.dir" value="build_drivers" />
-	<property name="test.src.dir"	   value="src_test" />
-	<property name="test.build.dir"    value="build_test" />
-	<property name="lib.dir"		   value="lib" />
-	<property name="etc.dir"		   value="etc" />
-	<property name="resources.dir"	   value="resources" />
-	<property name="scripts.dir"	   value="scripts" />
-	
-	<property name="compile.target"	   value="1.5" />
-	
+	<property name="compile.target"	value="1.5" />
 
-	<path id="libpath">
+	<property name="domain.name"    value="bits" />
+	<property name="dist.dir"	    value="dist" />
+	<property name="dist.name"      value="${domain.name}_${ant.project.name}" />
+	<property name="src.dir"  	    value="src" />
+	<property name="build.dir" 	    value="build" />
+	<property name="lib.dir"        value="lib" />
+	<property name="resources.dir"  value="resources" />
+	<property name="test.src.dir"   value="src_test" />
+	<property name="test.build.dir" value="build_test" />
+	<property name="resources.build.dir" value="resources_build" />
+	
+	<property name="app.name"       value="" />
+	<property name="app.main"       value="" />
+	<property name="app.icon"       value="" />
+	
+	
+	<path id="classpath">
 		<fileset dir="${lib.dir}">
-			<include name="**/*.jar"/>
+			<include name="*.jar"/>
 		</fileset>
 	</path>
-
-	
-	<!-- Targets -->
-  	<target name="init">
-    	<tstamp>
-			<format property="build.timestamp" pattern="yyyy-MM-dd HH:mm" />
-			<format property="build.timestamp.nospace" pattern="yyyy-MM-dd_HHmm" />
-		</tstamp>
-  	</target>
-	
-	
-  	<target name="compile" depends="init" description="Compiles main source code." >
-		<mkdir dir="${build.dir}"/>
-    	<javac destdir="${build.dir}" debug="yes" fork="yes" target="${compile.target}" includeantruntime="no">
-			<src path="${src.dir}" />
-      		<exclude name="**/deprecated/**"/>
-      		<classpath> 
-         		<path refid="libpath"/>
-	  		</classpath>
-    	</javac>
-  	</target>
-
-
-	<target name="compile-drivers" depends="compile" description="Compiles source code for hidpunk drivers">
-		<mkdir dir="${build.drivers.dir}" />
 		
-		<javac destdir="${build.drivers.dir}" debug="yes" fork="yes" target="${compile.target}" includeantruntime="no">
-			<src path="${src.drivers.dir}" />
+		
+	<!-- Project specific targets -->
+	
+	<property name="drivers.src.dir"   value="src_drivers" />
+	<property name="drivers.build.dir" value="build_drivers" />
+	
+	<target name="compile-drivers" depends="compile" description="Compiles source code for hidpunk drivers">
+		<mkdir dir="${drivers.build.dir}" />
+		
+		<javac destdir="${drivers.build.dir}" debug="yes" fork="yes" target="${compile.target}" includeantruntime="no">
+			<src path="${drivers.src.dir}" />
 			<exclude name="**/deprecated/**"/>
 			<classpath>
 				<path refid="libpath"/>
@@ -65,30 +46,50 @@
 			</classpath>
 		</javac>
 	</target>
-
-
-	<target name="compile-test" depends="compile" description="Compiles test code, not to be distributed.">
-		<mkdir dir="${build.test.dir}" />
-    	<javac destdir="${build.test.dir}" debug="yes" fork="yes" nowarn="true" target="${compile.target}" includeantruntime="no">
-			<src path="${src.test.dir}" />
-      		<classpath> 
-         		<path refid="libpath" />
-				<pathelement path="${build.dir}" />
-				<pathelement path="${build.drivers.dir}" />
-      		</classpath>
-    	</javac>
-  	</target>
 	
-
-  	<target name="dist" depends="compile,compile-drivers,svn" description="Generate the distribution." >
-		<mkdir dir="${dist.dir}"/>	
-    
-		<manifest id="ParserManifest" file="MANIFEST.MF">
+	
+	
+	<!-- Targets -->	
+	
+	<target name="init">
+		<tstamp>
+			<format property="build.timestamp" pattern="yyyy-MM-dd HH:mm" />
+			<format property="build.timestamp.nospace" pattern="yyyy-MM-dd_HHmm" />
+		</tstamp>
+	</target>
+	
+	
+	<target name="compile" depends="init" description="compile the source " >
+		<mkdir dir="${build.dir}" />
+		<javac srcdir="src" destdir="build" debug="yes" fork="yes" target="${compile.target}" includeantruntime="false">
+			<exclude name="**/deprecated/**"/>
+			<classpath> 
+				<path refid="classpath"/>
+			</classpath>
+		</javac>
+	</target>
+	
+	
+	<target name="compile-test" depends="compile" description="compile the test source " >
+		<mkdir dir="${test.build.dir}" />
+		<javac srcdir="${test.src.dir}" destdir="${test.build.dir}" debug="yes" nowarn="true" target="${compile.target}" includeantruntime="false">
+			<classpath>
+				<path refid="classpath" />
+				<pathelement location="${build.dir}" />
+			</classpath>
+		</javac>
+	</target>
+	
+	
+	<target name="dist" depends="compile,compile-drivers,git" description="generate the jar file" >
+		<mkdir dir="${dist.dir}" />
+		
+		<manifest file="MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}"/>
 			<attribute name="Build-Version" value="${build.version}" />
 			<attribute name="Build-Timestamp" value="${build.timestamp}" />
 		</manifest>	
-
+		
 		<property name="build.touch.version" value="VERSION_${build.version}" />
 		<property name="build.touch.timestamp" value="TIMESTAMP_${build.timestamp.nospace}" />
 
@@ -96,39 +97,67 @@
 		<touch file="${build.touch.version}" />
 		<touch file="${build.touch.timestamp}" />
 		
-		<jar jarfile="${dist.dir}/${dist.name}.jar"
-				basedir="${build.dir}"
-				excludes="**/deprecated/**"
-				manifest="MANIFEST.MF">
-
-			<fileset dir="${build.drivers.dir}" />
+		<jar jarfile="${dist.dir}/${dist.name}.jar" basedir="${build.dir}" manifest="MANIFEST.MF">
+			<fileset dir="${drivers.build.dir}" />
 			<fileset dir="${src.dir}" />
-			<fileset dir="${src.drivers.dir}" />
-			<fileset dir="${resources.dir}" />
+			<fileset dir="${drivers.src.dir}" />
 			<metainf file="README" />
 			<metainf file="${build.touch.version}" />
 			<metainf file="${build.touch.timestamp}" />
-    	</jar>
+		</jar>
 
 		<delete file="MANIFEST.MF" />
 		<delete file="${build.touch.version}" />
 		<delete file="${build.touch.timestamp}" />
-  	</target>
+	</target>
+	
+	
+	<target name="app" depends="dist" description="Create the ${app.name} application bundle.">
+		<property name="bundle.name" value="${app.name}.app" />
+		<exec executable="python">
+			<arg value="${resources.build.dir}/make_app_bundle.py" />
+			<arg value="${app.main}" />
+			<arg value="dist/${bundle.name}" />
+			<arg value="-w" />
+			<arg value="-s" /><arg value="${resources.build.dir}/JavaApplicationStub" />
+			<arg value="-n" /><arg value="${app.name}" />
+			<arg value="-r" /><arg value="${dist.dir}/${dist.name}.jar" />
+			<arg value="-r" /><arg value="${lib.dir}" />
+			<arg value="-r" /><arg value="${resources.dir}" />
+			<arg value="-i" /><arg value="${app.icon}" />
+			<arg value="-J" /><arg value="-Xmx1024M" />
+		</exec>
+	</target>
 
 
-	<target name="all" description="Compile and package everything and stuff." depends="dist" />
+	<target name="clean" description="clean up" >
+		<delete dir="${build.dir}" />
+		<delete dir="${test.build.dir}" />
+	</target>
+  
 
-
-  	<target name="clean" description="clean up" >
-    	<delete dir="${build.dir}" />
-    	<delete dir="${build.drivers.dir}" />
-		<delete dir="${build.test.dir}" />
-  	</target>
-
-
-
-
-
+	<target name="test" depends="compile-test">
+		<junit haltonfailure="true">
+			<formatter type="plain" usefile="false"/>
+		
+			<classpath>
+				<path refid="classpath" />
+				<pathelement location="${build.dir}" />
+				<pathelement location="${test.build.bir}" />
+			</classpath>
+      	
+			<batchtest fork="yes">
+				<fileset dir="${test.src.dir}">
+					<include name="**/*Test*.java"/>
+					<include name="**/*Unit*.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	
+	
+	
 	<!-- Version Control Stuff -->
 	
 	
@@ -205,8 +234,7 @@
 		<property name="build.version.suffix" value="_modified"/>
 		<echo message="WARNING: Project contains unversioned modifications." />
 	</target>
-
-
-
+	
+	
 	
 </project>
