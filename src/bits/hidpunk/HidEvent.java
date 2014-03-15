@@ -1,12 +1,17 @@
+/* 
+ * Copyright (c) 2012, Massachusetts Institute of Technology
+ * Released under the BSD 2-Clause License
+ * http://opensource.org/licenses/BSD-2-Clause 
+ */ 
 package bits.hidpunk;
 
 import java.nio.ByteBuffer;
 
-/** 
- * @author Philip DeCamp  
+
+/**
+ * @author Philip DeCamp
  */
 public class HidEvent implements Cloneable {
-
     public int mType;
     public int mCookie;
     public int mValue;
@@ -14,27 +19,25 @@ public class HidEvent implements Cloneable {
     public int mLongValueSize;
     public ByteBuffer mLongValue;
     public boolean mStale;
-    
-    
+
     public HidEvent clone() {
-        try{
+        try {
             HidEvent ret = (HidEvent)super.clone();
-            
-            if(mLongValue != null) {
+
+            if( mLongValue != null ) {
                 ByteBuffer val = mLongValue.duplicate();
-                ByteBuffer buf = ByteBuffer.allocate(mLongValue.remaining());
-                val.get(buf.array());
-                
+                ByteBuffer buf = ByteBuffer.allocate( mLongValue.remaining() );
+                val.get( buf.array() );
                 ret.mLongValue = buf;
             }
-            
+
             return ret;
-            
-        }catch(Exception ex) {
+
+        } catch( Exception ex ) {
             ex.printStackTrace();
-            System.exit(-1);
+            System.exit( -1 );
             return null;
         }
     }
-    
+
 }

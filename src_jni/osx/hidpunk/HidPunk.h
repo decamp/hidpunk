@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012, Massachusetts Institute of Technology
+ * Released under the BSD 2-Clause License
+ * http://opensource.org/licenses/BSD-2-Clause
+ */
 #ifndef _HID_PUNK_H_
 #define _HID_PUNK_H_
 

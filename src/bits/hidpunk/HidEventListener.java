@@ -1,3 +1,8 @@
+/* 
+ * Copyright (c) 2012, Massachusetts Institute of Technology
+ * Released under the BSD 2-Clause License
+ * http://opensource.org/licenses/BSD-2-Clause 
+ */ 
 package bits.hidpunk;
 
 /** 
@@ -35,7 +40,7 @@ public interface HidEventListener {
      * 
      * @param events Array of HID events.
      */
-    public void hidEventsReceived(HidEvent[] events);
+    public void hidEventsReceived( HidEvent[] events );
         
     /**
      * Notifies listener that no more hid events will be recieved from this
@@ -57,6 +62,6 @@ public interface HidEventListener {
      * <p>
      * @param ex Exception indicating why HidEventSource is closing.
      */
-    public void hidEventSourceClosing(Exception ex);
+    public void hidEventSourceClosing( Exception ex );
         
 }

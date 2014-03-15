@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012, Massachusetts Institute of Technology
+ * Released under the BSD 2-Clause License
+ * http://opensource.org/licenses/BSD-2-Clause
+ */
 #include "HidPunk.h"
 #include "jniCFRunLoop.h"
 
@@ -6,9 +11,9 @@ Java_bits_hidpunk_osx_CFRunLoop_runLoopGetCurrent
 (JNIEnv* env, jclass clazz)
 {
     CFRunLoopRef ret = CFRunLoopGetCurrent();
-    if(ret)
+    if(ret) {
         CFRetain(ret);
-    
+    }
     return *(jlong*)&ret;
 }
 

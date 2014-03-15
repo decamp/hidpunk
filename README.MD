@@ -1,10 +1,11 @@
-THE COGMAC HIDPUNK LIBRARY:
-HidPunk is a library for accessing Human Interface Devices (HID).  The HidPunk
-API allows developers to create custom interfaces for a wide range of HID devices,
-include mice, keyboards and joysticks; without having to write any C code.
+THE HIDPUNK LIBRARY:
+HidPunk is used for accessing Human Interface Devices (HID). The API provided
+allows developers to create custom interfaces / user-space drivers for a wide
+range of HID devices, including mice, keyboards and joysticks, without
+having to write any compiled code.
 
 Currently, the only implementation of the HidPunk API is written for 
-OSX 10.4 or above.
+OSX 10.6 or above.
 
 
 BUILDING:
@@ -22,17 +23,12 @@ You may set this with the runtime parameter
 "java -Djava.library.path=<location_of_libs> <whatever else>".
 
 
-
 DEPENDENCIES:
 cogmac_langx.jar: Used for platform specific queries.  Found in the cogmac
 commons repository.
 
 cogmac_event.jar: Used for the event casting system.  Found in the cogmac 
 commons repository.
-
-
-KNOWN ISSUES:
-None
 
 
 MAINTAINED BY:

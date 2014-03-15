@@ -1,6 +1,10 @@
+/*
+ * Copyright (c) 2012, Massachusetts Institute of Technology
+ * Released under the BSD 2-Clause License
+ * http://opensource.org/licenses/BSD-2-Clause
+ */
 #include "HidPunk.h"
 #include "jniNotificationHandler.h"
-
 
 struct {
     jclass mClass;

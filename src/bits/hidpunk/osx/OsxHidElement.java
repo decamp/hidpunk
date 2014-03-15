@@ -1,3 +1,8 @@
+/* 
+ * Copyright (c) 2012, Massachusetts Institute of Technology
+ * Released under the BSD 2-Clause License
+ * http://opensource.org/licenses/BSD-2-Clause 
+ */ 
 package bits.hidpunk.osx;
 
 import java.nio.ByteBuffer;
@@ -7,52 +12,51 @@ import java.util.List;
 import bits.hidpunk.*;
 
 
-/** 
- * @author Philip DeCamp  
+/**
+ * @author Philip DeCamp
  */
 public class OsxHidElement implements HidElement {
 
-    
-    static OsxHidElement[] findElements(OsxHidDevice device, CFRef dict) throws HidException {
-        return findElements(device, dict.getPointer());
+
+    static OsxHidElement[] findElements( OsxHidDevice device, CFRef dict ) throws HidException {
+        return findElements( device, dict.pointer() );
     }
 
     
-    private static OsxHidElement[] findElements(OsxHidDevice device, long dictPtr) throws HidException {
-        long arrPtr = getElementValue(dictPtr);
-        int len = getArrayLength(arrPtr);
-        
-        if(len < 1)
+    private static OsxHidElement[] findElements( OsxHidDevice device, long dictPtr ) throws HidException {
+        long arrPtr = getElementValue( dictPtr );
+        int len = getArrayLength( arrPtr );
+
+        if( len < 1 )
             return new OsxHidElement[0];
-        
+
         OsxHidElement[] ret = new OsxHidElement[len];
-        
-        for(int i = 0; i < len; i++) {
-            long elPtr = getArrayElement(arrPtr, i); 
-            ret[i] = constructElement(device, elPtr);
+
+        for( int i = 0; i < len; i++ ) {
+            long elPtr = getArrayElement( arrPtr, i );
+            ret[i] = create( device, elPtr );
         }
-        
+
         return ret;
     }
+
     
-    
-    private static OsxHidElement constructElement(OsxHidDevice device, long elPtr) throws HidException {
-        ByteBuffer buf = ByteBuffer.allocateDirect(360);
-        buf.order(ByteOrder.nativeOrder());
+    private static OsxHidElement create( OsxHidDevice device, long elPtr ) throws HidException {
+        ByteBuffer buf = ByteBuffer.allocateDirect( 360 );
+        buf.order( ByteOrder.nativeOrder() );
         
-        boolean hasChildren = queryElementInfo(elPtr, buf);
+        boolean hasChildren = queryElementInfo( elPtr, buf );
         OsxHidElement[] children;
-        
-        if(hasChildren) {
-            children = findElements(device, elPtr);
-        }else{
+
+        if( hasChildren ) {
+            children = findElements( device, elPtr );
+        } else {
             children = new OsxHidElement[0];
         }
-        
-        return new OsxHidElement(device, buf, children);
+
+        return new OsxHidElement( device, buf, children );
     }
-    
-    
+
     
     private final OsxHidDevice mDevice;
     private final int mType;
@@ -72,12 +76,11 @@ public class OsxHidElement implements HidElement {
     private final int mUnit;
     private final int mUnitExponent;
     private final String mName;
-        
+
     private final OsxHidElement[] mChildren;
     
-    
-    
-    private OsxHidElement(OsxHidDevice device, ByteBuffer buf, OsxHidElement[] children) {
+
+    private OsxHidElement( OsxHidDevice device, ByteBuffer buf, OsxHidElement[] children ) {
         mDevice = device;
         mChildren = children;
         mType = buf.getInt();
@@ -96,139 +99,164 @@ public class OsxHidElement implements HidElement {
         mHasNullState = buf.get() != 0;
         mUnit = buf.getInt();
         mUnitExponent = buf.getInt();
-        mName = OsxUtil.readCString(buf, 256);
+        mName = OsxUtil.readCString( buf, 256 );
     }
 
-
     
-    public OsxHidDevice getDevice() {
+
+    @Override
+    public OsxHidDevice device() {
         return mDevice;
     }
-    
-    public int getType() {
+
+    @Override
+    public int type() {
         return mType;
     }
-    
-    public int getUsagePage() {
+
+    @Override
+    public int usagePage() {
         return mUsagePage;
     }
-    
-    public int getUsage() {
+
+    @Override
+    public int usage() {
         return mUsage;
     }
-    
-    public int getCookie() {
+
+    @Override
+    public int cookie() {
         return mCookie;
     }
-    
-    public long getMin() {
+
+    @Override
+    public long min() {
         return mMin;
     }
-    
-    public long getMax() {
+
+    @Override
+    public long max() {
         return mMax;
     }
-    
-    public long getScaledMin() {
+
+    @Override
+    public long scaledMin() {
         return mScaledMin;
     }
-    
-    public long getScaledMax() {
+
+    @Override
+    public long scaledMax() {
         return mScaledMax;
     }
-    
-    public long getSize() {
+
+    @Override
+    public long size() {
         return mSize;
     }
-    
+
+    @Override
     public boolean isRelative() {
         return mIsRelative;
     }
-    
+
+    @Override
     public boolean isWrapping() {
         return mIsWrapping;
     }
-    
+
+    @Override
     public boolean isNonLinear() {
         return mIsNonLinear;
     }
-    
+
+    @Override
     public boolean hasPreferredState() {
         return mHasPreferredState;
     }
-    
+
+    @Override
     public boolean hasNullState() {
         return mHasNullState;
     }
-    
-    public int getUnit() {
+
+    @Override
+    public int unit() {
         return mUnit;
     }
-    
-    public int getUnitExponent() {
+
+    @Override
+    public int unitExponent() {
         return mUnitExponent;
     }
-    
-    public String getName() {
+
+    @Override
+    public String name() {
         return mName;
     }
-    
-    
-    
-    public int getChildCount() {
+
+
+
+    @Override
+    public int childCount() {
         return mChildren.length;
     }
-    
-    public OsxHidElement getChild(int idx) {
+
+    @Override
+    public OsxHidElement child( int idx ) {
         return mChildren[idx];
     }
 
-    public OsxHidElement[] getChildren() {
+    @Override
+    public OsxHidElement[] children() {
         OsxHidElement[] ret = new OsxHidElement[mChildren.length];
-        System.arraycopy(mChildren, 0, ret, 0, ret.length);
+        System.arraycopy( mChildren, 0, ret, 0, ret.length );
         return ret;
     }
 
-    
-    
+
+
+    @Override
     public String toString() {
-        StringBuilder s = new StringBuilder("HID Element:");
-        s.append(String.format("\n  Type: 0x%02X", mType));
-        s.append(String.format("\n  UsagePage: 0x%02X", mUsagePage));
-        s.append(String.format("\n  Usage: 0x%02X", mUsage));
-        s.append(String.format("\n  Cookie: 0x%08X", mCookie));
-        s.append(String.format("\n  Min: %d", mMin));
-        s.append(String.format("\n  Max: %d", mMax));
-        s.append(String.format("\n  ScaledMin: %d", mScaledMin));
-        s.append(String.format("\n  ScaledMax: %d", mScaledMax));
-        s.append(String.format("\n  Size: %02X", mSize));
-        s.append(String.format("\n  IsRelative: %b", mIsRelative));
-        s.append(String.format("\n  IsWrapping: %b", mIsWrapping));
-        s.append(String.format("\n  IsNonLinear: %b", mIsNonLinear));
-        s.append(String.format("\n  HasPreferredState: %b", mHasPreferredState));
-        s.append(String.format("\n  HasNullState: %b", mHasNullState));
-        s.append(String.format("\n  Unit: 0x%02X", mUnit));
-        s.append(String.format("\n  UnitExponent: 0x%02X", mUnitExponent));
-        s.append(String.format("\n  Name: %s", mName));
-        s.append(String.format("\n  Children: %d", mChildren.length));
-        
+        StringBuilder s = new StringBuilder( "HID Element:" );
+        s.append( String.format( "\n  Type: 0x%02X", mType ) );
+        s.append( String.format( "\n  UsagePage: 0x%02X", mUsagePage ) );
+        s.append( String.format( "\n  Usage: 0x%02X", mUsage ) );
+        s.append( String.format( "\n  Cookie: 0x%08X", mCookie ) );
+        s.append( String.format( "\n  Min: %d", mMin ) );
+        s.append( String.format( "\n  Max: %d", mMax ) );
+        s.append( String.format( "\n  ScaledMin: %d", mScaledMin ) );
+        s.append( String.format( "\n  ScaledMax: %d", mScaledMax ) );
+        s.append( String.format( "\n  Size: %02X", mSize ) );
+        s.append( String.format( "\n  IsRelative: %b", mIsRelative ) );
+        s.append( String.format( "\n  IsWrapping: %b", mIsWrapping ) );
+        s.append( String.format( "\n  IsNonLinear: %b", mIsNonLinear ) );
+        s.append( String.format( "\n  HasPreferredState: %b", mHasPreferredState ) );
+        s.append( String.format( "\n  HasNullState: %b", mHasNullState ) );
+        s.append( String.format( "\n  Unit: 0x%02X", mUnit ) );
+        s.append( String.format( "\n  UnitExponent: 0x%02X", mUnitExponent ) );
+        s.append( String.format( "\n  Name: %s", mName ) );
+        s.append( String.format( "\n  Children: %d", mChildren.length ) );
+
         return s.toString();
     }
-    
 
     
-    void getFlattenedElements(List<OsxHidElement> list) {
-        list.add(this);
-        for(int i = 0; i < mChildren.length; i++) {
-            mChildren[i].getFlattenedElements(list);
+
+    void getFlattenedElements( List<OsxHidElement> list ) {
+        list.add( this );
+        for( int i = 0; i < mChildren.length; i++ ) {
+            mChildren[i].getFlattenedElements( list );
         }
     }
-    
-    
-    
-    private static native long getElementValue(long dictPtr) throws HidException;
-    private static native int getArrayLength(long arrPtr) throws HidException;
-    private static native long getArrayElement(long arrPtr, int pos) throws HidException;
-    private static native boolean queryElementInfo(long elPtr, ByteBuffer outBuf) throws HidException;
+
+
+
+    private static native long getElementValue( long dictPtr ) throws HidException;
+
+    private static native int getArrayLength( long arrPtr ) throws HidException;
+
+    private static native long getArrayElement( long arrPtr, int pos ) throws HidException;
+
+    private static native boolean queryElementInfo( long elPtr, ByteBuffer outBuf ) throws HidException;
 
 }

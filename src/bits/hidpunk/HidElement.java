@@ -1,3 +1,8 @@
+/* 
+ * Copyright (c) 2012, Massachusetts Institute of Technology
+ * Released under the BSD 2-Clause License
+ * http://opensource.org/licenses/BSD-2-Clause 
+ */ 
 package bits.hidpunk;
 
 /** 
@@ -5,30 +10,31 @@ package bits.hidpunk;
  */
 public interface HidElement {
 
-    public HidDevice getDevice();
+    public HidDevice device();
     
-    public int getType();
-    public int getUsagePage();
-    public int getUsage();
-    public int getCookie();
+    public int type();
+    public int usagePage();
+    public int usage();
+    public int cookie();
     
-    //These elements return longs since HID devices normally returns UInt32 values.
-    public long getMin();
-    public long getMax();
-    public long getScaledMin();
-    public long getScaledMax();
-    public long getSize();
+    //These elements return longs because HID devices normally returns UInt32 values.
+    public long min();
+    public long max();
+    public long scaledMin();
+    public long scaledMax();
+    public long size();
     
     public boolean isRelative();
     public boolean isWrapping();
     public boolean isNonLinear();
     public boolean hasPreferredState();
     public boolean hasNullState();
-    public int getUnit();
-    public int getUnitExponent();
-    public String getName();
-    public int getChildCount();
-    public HidElement getChild(int idx);
-    public HidElement[] getChildren();
     
+    public int unit();
+    public int unitExponent();
+    
+    public String name();
+    public int childCount();
+    public HidElement child( int idx );
+    public HidElement[] children();
 }

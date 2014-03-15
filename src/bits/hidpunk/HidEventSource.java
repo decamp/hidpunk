@@ -1,3 +1,8 @@
+/* 
+ * Copyright (c) 2012, Massachusetts Institute of Technology
+ * Released under the BSD 2-Clause License
+ * http://opensource.org/licenses/BSD-2-Clause 
+ */ 
 package bits.hidpunk;
 
 import java.util.List;
@@ -7,14 +12,14 @@ import java.util.List;
  */
 public interface HidEventSource {
 
-    public HidDevice getDevice();
-    public HidInterface getInterface();
-    public List<HidElement> getElements();
-    public boolean hasElement(HidElement el);
+    public HidDevice device();
+    public HidInterface hidInterface();
+    public List<HidElement> elements();
+    public boolean hasElement( HidElement el );
     public boolean isAsync();
     public boolean isPolling();
     public boolean isQueued();
-    public long getPollingMicros();
+    public long pollingMicros();
     
     public void start() throws HidException;
     public void stop() throws HidException;
