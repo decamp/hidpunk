@@ -5,7 +5,7 @@
  */ 
 package bits.hidpunk.osx;
 
-import bits.langx.ref.AbstractRefable;
+import bits.util.ref.AbstractRefable;
 
 
 /**

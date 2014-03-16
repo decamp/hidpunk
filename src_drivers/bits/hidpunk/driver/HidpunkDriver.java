@@ -7,8 +7,8 @@ package bits.hidpunk.driver;
 
 import java.util.concurrent.Executor;
 
-import bits.event.*;
 import bits.hidpunk.*;
+import bits.util.event.*;
 
 
 /**
@@ -20,12 +20,11 @@ public interface HidpunkDriver<L> extends EventSource<L> {
     public static int THREADING_DEDICATED   = EventCaster.THREADING_DEDICATED;
     public static int THREADING_SYNCHRONOUS = EventCaster.THREADING_SYNCHRONOUS;
 
+    
     public void addListener( L listener );
-
-    public void addListenerWeakly( L listener );
-
+    
+    
     public void removeListener( L listener );
-
 
     /**
      * Starts device using default threading strategy for passing device events.

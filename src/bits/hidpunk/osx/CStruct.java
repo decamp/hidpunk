@@ -6,7 +6,7 @@
 package bits.hidpunk.osx;
 
 import bits.hidpunk.HidException;
-import bits.langx.ref.AbstractRefable;
+import bits.util.ref.AbstractRefable;
 
 
 /**

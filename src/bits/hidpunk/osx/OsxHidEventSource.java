@@ -10,7 +10,7 @@ import java.nio.ByteOrder;
 import java.util.*;
 
 import bits.hidpunk.*;
-import bits.langx.ref.Refable;
+import bits.util.ref.Refable;
 
 
 
@@ -844,6 +844,7 @@ class OsxHidEventSource implements HidEventSource {
         }
     }
 
+    @SuppressWarnings( "unused" )
     private void asyncValueCallback( int code, int idx ) {
         if( !mRunning ) {
             return;

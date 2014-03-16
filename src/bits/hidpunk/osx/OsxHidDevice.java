@@ -9,8 +9,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.*;
 
-import bits.event.EventCaster;
 import bits.hidpunk.*;
+import bits.util.event.EventCaster;
 
 
 /**
@@ -187,7 +187,7 @@ class OsxHidDevice implements HidDevice {
                 }
 
                 if( mGroup == null ) {
-                    mGroup = EventCaster.newInstance( HidTerminationListener.class, EventCaster.THREADING_SYNCHRONOUS );
+                    mGroup = EventCaster.create( HidTerminationListener.class, EventCaster.THREADING_SYNCHRONOUS );
 
                     try {
                         mTerminated = mManager.addTerminationListener( mCallback, this );
@@ -216,7 +216,7 @@ class OsxHidDevice implements HidDevice {
                 }
 
                 if( mGroup == null ) {
-                    mGroup = EventCaster.newInstance( HidTerminationListener.class, EventCaster.THREADING_SYNCHRONOUS );
+                    mGroup = EventCaster.create( HidTerminationListener.class, EventCaster.THREADING_SYNCHRONOUS );
 
                     try {
                         mTerminated = mManager.addTerminationListener( mCallback, this );
@@ -322,8 +322,7 @@ class OsxHidDevice implements HidDevice {
 
     private void processTermination() {
         EventCaster<HidTerminationListener> group;
-        HidTerminationListener callback;
-
+        
         synchronized( this ) {
             if( mTerminated ) {
                 return;

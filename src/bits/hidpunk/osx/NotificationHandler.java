@@ -210,6 +210,7 @@ class NotificationHandler extends CStruct {
         }
     }
 
+    @SuppressWarnings( "unused" )
     private void processTermination( int device ) {
         if( mRemovedListener != null ) {
             mRemovedListener.hidTerminated( mDevice );

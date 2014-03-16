@@ -82,9 +82,7 @@ public class OsxHidManager extends HidManager {
             }
 
         } finally {
-            if( iter != null ) {
-                iter.deref();
-            }
+            iter.deref();
         }
 
         return list;

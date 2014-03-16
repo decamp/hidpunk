@@ -5,9 +5,8 @@
  */ 
 package bits.hidpunk.driver;
 
-import bits.data.SemiWeakHashSet;
-import bits.event.*;
 import bits.hidpunk.*;
+import bits.util.event.*;
 
 import java.util.*;
 import java.util.concurrent.Executor;
@@ -37,7 +36,7 @@ public abstract class AbstractHidpunkDriver<L> implements HidpunkDriver<L> {
     protected final Logger mLogger = Logger.getLogger( getClass().getName() );
     protected final HidDevice mDevice;
     protected final Class<L> mListenerClass;
-    private final SemiWeakHashSet<L> mListeners = new SemiWeakHashSet<L>();
+    private final Set<L> mListeners = new HashSet<L>();
 
     private EventCaster<L> mCaster = null;
     private HidInterface mInterface = null;
@@ -56,57 +55,56 @@ public abstract class AbstractHidpunkDriver<L> implements HidpunkDriver<L> {
 
 
 
+    @Override
     public synchronized void addListener( L listener ) {
         mListeners.add( listener );
-
-        if( mCaster != null )
+        if( mCaster != null ) {
             mCaster.addListener( listener );
+        }
     }
 
-
-    public synchronized void addListenerWeakly( L listener ) {
-        mListeners.addWeakly( listener );
-
-        if( mCaster != null )
-            mCaster.addListenerWeakly( listener );
-    }
-
-
+    
+    @Override
     public synchronized void removeListener( L listener ) {
         mListeners.remove( listener );
-
-        if( mCaster != null )
+        if( mCaster != null ) {
             mCaster.removeListener( listener );
+        }
     }
 
 
 
+    @Override
     public synchronized boolean start() throws HidException {
         return start( THREADING_AWT );
     }
 
 
+    @Override
     public synchronized boolean start( int threading ) throws HidException {
-        if( mInterface != null )
+        if( mInterface != null ) {
             return false;
-
-        EventCaster<L> caster = EventCaster.newInstance( mListenerClass, threading );
+        }
+        EventCaster<L> caster = EventCaster.create( mListenerClass, threading );
         return doStart( caster );
     }
 
 
+    @Override
     public synchronized boolean start( Executor executor ) throws HidException {
-        if( mInterface != null )
+        if( mInterface != null ) {
             return false;
-
-        EventCaster<L> caster = EventCaster.newInstance( mListenerClass, executor );
+        }
+        EventCaster<L> caster = EventCaster.create( mListenerClass, executor );
         return doStart( caster );
     }
 
 
+    @Override
     public synchronized boolean startPrivately( L privateListener ) throws HidException {
-        if( mInterface != null )
+        if( mInterface != null ) {
             return false;
+        }
 
         mInterface = mDevice.openInterface();
         interfaceOpened( mInterface, privateListener );
@@ -116,18 +114,21 @@ public abstract class AbstractHidpunkDriver<L> implements HidpunkDriver<L> {
     }
 
 
+    @Override
     public synchronized boolean stop() throws HidException {
         HidInterface inter = mInterface;
-        if( inter == null )
+        if( inter == null ) {
             return false;
+        }
 
         EventCaster<L> caster = mCaster;
         mInterface = null;
         mCaster = null;
 
         inter.close();
-        if( caster != null )
+        if( caster != null ) {
             caster.close();
+        }
 
         mLogger.finer( String.format( "Driver for device [%s] stopped.", mDevice ) );
         return true;
@@ -189,11 +190,9 @@ public abstract class AbstractHidpunkDriver<L> implements HidpunkDriver<L> {
         mCaster = caster;
 
         for( L listener : mListeners ) {
-            if( mListeners.containsStrongly( listener ) ) {
+            if( mListeners.contains( listener ) ) {
                 caster.addListener( listener );
-            } else {
-                caster.addListenerWeakly( listener );
-            }
+            } 
         }
 
         interfaceOpened( mInterface, mCaster.cast() );

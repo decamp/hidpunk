@@ -392,12 +392,11 @@ class CFRunLoop {
         }
 
 
-
+        @SuppressWarnings( "unused" )
         public void ref() {
             if( mRefs == null ) {
                 return;
             }
-
             for( CFRef ref : mRefs ) {
                 ref.ref();
             }

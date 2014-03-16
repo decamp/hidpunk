@@ -9,9 +9,8 @@ import java.util.*;
 import java.util.logging.*;
 import java.util.concurrent.Executor;
 
-import bits.data.SemiWeakHashSet;
-import bits.event.*;
 import bits.hidpunk.*;
+import bits.util.event.*;
 
 
 /**
@@ -35,7 +34,7 @@ public abstract class DriverGroup<L> implements EventSource<L> {
 
     private final HidMatcher mMatcher;
     private final MatchHandler mMatchHandler;
-    private final SemiWeakHashSet<L> mListeners;
+    private final Set<L> mListeners;
 
     private Set<HidpunkDriver<? super L>> mDrivers = new HashSet<HidpunkDriver<? super L>>();
 
@@ -48,7 +47,7 @@ public abstract class DriverGroup<L> implements EventSource<L> {
     protected DriverGroup( HidMatcher matcher ) {
         mMatcher = matcher;
         mMatchHandler = new MatchHandler();
-        mListeners = new SemiWeakHashSet<L>();
+        mListeners = new HashSet<L>();
     }
 
 
@@ -60,19 +59,11 @@ public abstract class DriverGroup<L> implements EventSource<L> {
         }
     }
 
-
-    public synchronized void addListenerWeakly( L listener ) {
-        mListeners.addWeakly( listener );
-        for( HidpunkDriver<? super L> d : mDrivers ) {
-            d.addListenerWeakly( listener );
-        }
-    }
-
-
+    
     public synchronized void removeListener( L listener ) {
         mListeners.remove( listener );
         for( HidpunkDriver<? super L> d : mDrivers ) {
-            d.addListenerWeakly( listener );
+            d.removeListener( listener );
         }
     }
 
@@ -189,11 +180,9 @@ public abstract class DriverGroup<L> implements EventSource<L> {
         }
 
         for( L listener : mListeners ) {
-            if( mListeners.containsStrongly( listener ) ) {
+            if( mListeners.contains( listener ) ) {
                 driver.addListener( listener );
-            } else {
-                driver.addListenerWeakly( listener );
-            }
+            } 
         }
 
         try {
@@ -224,7 +213,8 @@ public abstract class DriverGroup<L> implements EventSource<L> {
         }
     }
 
-
+    
+    @SuppressWarnings( "unused" )
     private synchronized void removeDevice( HidDevice device, HidpunkDriver<?> driver ) {
         if( mDrivers.remove( driver ) ) {
             sLog.finest( String.format( "DriverGroup removing driver [%s]", driver ) );

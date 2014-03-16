@@ -8,7 +8,7 @@ package bits.hidpunk;
 import java.util.*;
 
 import bits.hidpunk.osx.*;
-import bits.langx.platform.OperatingSystem;
+import bits.util.platform.OperatingSystem;
 
 
 /**
@@ -25,7 +25,7 @@ public abstract class HidManager {
             return;
         }
         sInit = true;
-        if( OperatingSystem.localOs() != OperatingSystem.OSX ) {
+        if( OperatingSystem.local() != OperatingSystem.OSX ) {
             throw new HidException( "Only OSX is supported at this time." );
         }
 
