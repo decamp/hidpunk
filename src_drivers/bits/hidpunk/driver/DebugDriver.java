@@ -18,21 +18,34 @@ public class DebugDriver extends AbstractHidpunkDriver<HidEventListener> {
 
     public static List<DebugDriver> findDevices( Long vendorID,
                                                  Long productID,
-                                                 long pollMicros, // <= 0 for // async
-                                                 boolean broadcastChangesOnly,
+                                                 long pollMicros, // <= 0 for async
+                                                 boolean onlyBroadcastChanges,
                                                  boolean addPrintListener )
                                                  throws HidException
     {
-        List<HidDevice> devices = findHidDevices( vendorID, productID );
+        HidMatcher matcher = HidManager.getManager().createMatcher();
+        matcher.vendorID( vendorID );
+        matcher.productID( productID );
+        return findDevices( matcher, pollMicros, onlyBroadcastChanges, addPrintListener );
+    }
+    
+    
+    public static List<DebugDriver> findDevices( HidMatcher matcher, 
+                                                 long pollMicros, // <= 0 for async
+                                                 boolean onlyBroadcastChanges,
+                                                 boolean addPrintListener )
+                                                 throws HidException
+    {
+        HidManager manager = HidManager.getManager();
+        List<HidDevice> devices = manager.findDevices( matcher );
         List<DebugDriver> ret = new ArrayList<DebugDriver>( devices.size() );
         PrintListener printer = (addPrintListener ? new PrintListener() : null);
 
         for( HidDevice dev : devices ) {
-            DebugDriver driver = new DebugDriver( dev, pollMicros, broadcastChangesOnly );
-
-            if( printer != null )
+            DebugDriver driver = new DebugDriver( dev, pollMicros, onlyBroadcastChanges );
+            if( printer != null ) {
                 driver.addListener( printer );
-
+            }
             ret.add( driver );
         }
 
@@ -54,15 +67,12 @@ public class DebugDriver extends AbstractHidpunkDriver<HidEventListener> {
     @Override
     protected void interfaceOpened( HidInterface inter, HidEventListener listener ) throws HidException {
         for( HidElement e : mDevice.flattenElements() ) {
-            // /System.out.println(e.getSize());
             HidEventSource source;
-
             if( mPollMicros <= 0.0 ) {
                 source = inter.createAsyncSource( 8, new CloneListener( listener ), e );
             } else {
                 source = inter.createPollingSource( mPollMicros, 0, new CloneListener( listener ), e );
             }
-
             source.start();
         }
     }
@@ -86,9 +96,9 @@ public class DebugDriver extends AbstractHidpunkDriver<HidEventListener> {
 
         public void hidEventsReceived( HidEvent[] events ) {
             if( mBroadcastChanges ) {
-                if( events[0].mStale || events[0].mValue == mLastValue && !mFirst )
+                if( events[0].mStale || events[0].mValue == mLastValue && !mFirst ) {
                     return;
-
+                }
                 mLastValue = events[0].mValue;
             }
 
@@ -105,8 +115,6 @@ public class DebugDriver extends AbstractHidpunkDriver<HidEventListener> {
                                    e.mCookie,
                                    e.mValue,
                                    e.mLongValueSize );
-                // System.out.println("HIDEvent: " + e.mCookie + "\t" + e.mValue
-                // + "\t" + e.mLongValueSize);
             }
         }
 

@@ -230,8 +230,9 @@ hidpunk_loadHidEvent
     (*env)->SetIntField(env, out, hidpunk_eventLongValueSizeField, (jint)(in->longValueSize));
     (*env)->SetBooleanField(env, out, hidpunk_eventStaleField, 0);
     
-    if(in->longValueSize <= 0)
+    if(in->longValueSize <= 0) {
         return 0;
+    }
     
     buf = (*env)->GetObjectField(env, out, hidpunk_eventLongValueField);
     if(buf == NULL) {
@@ -257,8 +258,8 @@ hidpunk_loadHidEvent
             return 0;
     }
     
-    bufData = (*env)->GetDirectBufferAddress(env, buf);
-    memcpy(buf, in->longValue, in->longValueSize);
+    bufData = (*env)->GetDirectBufferAddress( env, buf );
+    memcpy( bufData, in->longValue, in->longValueSize );
     return 0;
 }
 

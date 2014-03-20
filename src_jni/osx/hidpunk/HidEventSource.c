@@ -87,8 +87,9 @@ eventCallback
     for(i = 0; i < s->mElCount; i++) {
         result = (*s->mInterface)->getElementValue(s->mInterface, s->mCookies[i], &event);
 
-        if(!result) 
+        if(!result) {
             result = hidpunk_loadHidEvent(env, &event, s->mEvents[i]);
+        } 
         
         if(result) {
             (*env)->CallVoidMethod(env, s->mSelf, s->mCallback, result);
@@ -119,14 +120,15 @@ queuedEventCallback
             if(result) {
                 if(result == kIOReturnUnderrun) {
                     if(s->mQueueInit) {
-                        if(i == 0)
+                        if(i == 0) {
                             return;
-                            
+                        }
                         result = hidpunk_nullifyEvent(env, s->mEvents[i]);
                     }else{
                         result = (*s->mInterface)->getElementValue(s->mInterface, s->mCookies[i], &event);
-                        if(!result)
+                        if(!result) {
                             result = hidpunk_loadHidEvent(env, &event, s->mEvents[i]);
+                        }
                     }
                 }
             }else{
@@ -189,12 +191,14 @@ queuedValueCallback
             if(result) {
                 if(result == kIOReturnUnderrun) {
                     if(s->mQueueInit) {
-                        if(i == 0)
+                        if(i == 0) {
                             return;
+                        }
                     }else{
                         result = (*s->mInterface)->getElementValue(s->mInterface, s->mCookies[i], &event);
-                        if(!result)
+                        if(!result) {
                             s->mValuePtr[i] = event.value;
+                        }
                     
                         if(result) {
                             (*env)->CallVoidMethod(env, s->mSelf, s->mCallback, result);
@@ -228,12 +232,14 @@ static void queuedAsyncEventCallback
     if(!result) {
         while(1) {
             result = (*q)->getNextEvent(q, &event, zeroTime, 0);
-            if(result)
+            if(result) {
                 break;
+            }
             
             result = hidpunk_loadHidEvent(env, &event, s->mEvents[0]);
-            if(result)
+            if(result) {
                 break;
+            }
 
             (*env)->CallVoidMethod(env, s->mSelf, s->mCallback, result, s->mElOffset);
         }

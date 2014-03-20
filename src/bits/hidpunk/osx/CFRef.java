@@ -80,7 +80,6 @@ class CFRef extends AbstractRefable {
     @Override
     protected void freeObject() {
         long ptr;
-
         synchronized( this ) {
             ptr = mPtr;
             mPtr = 0;
@@ -89,10 +88,7 @@ class CFRef extends AbstractRefable {
         if( ptr == 0 ) {
             return;
         }
-
-
-        System.out.flush();
-
+        
         try {
             release( ptr );
         } catch( Exception ex ) {

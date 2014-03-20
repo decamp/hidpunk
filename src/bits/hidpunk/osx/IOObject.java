@@ -38,9 +38,9 @@ class IOObject extends AbstractRefable {
     protected synchronized void freeObject() {
         long ptr = mPtr;
         mPtr = 0;
-
-        if( ptr == 0 )
+        if( ptr == 0 ) {
             return;
+        }
 
         try {
             release( ptr );

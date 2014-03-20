@@ -92,9 +92,12 @@ class OsxHidEventSource implements HidEventSource {
     }
 
 
-    static OsxHidEventSource createAsyncEventSource
-            ( OsxHidInterface inter, long interPtr, int queueSize, HidEventListener callback, HidElement... elements )
-                    throws HidException
+    static OsxHidEventSource createAsyncEventSource( OsxHidInterface inter, 
+                                                     long interPtr, 
+                                                     int queueSize, 
+                                                     HidEventListener callback, 
+                                                     HidElement... elements )
+                                                     throws HidException
     {
         List<HidElement> list = new ArrayList<HidElement>( elements.length );
         for( int i = 0; i < elements.length; i++ ) {

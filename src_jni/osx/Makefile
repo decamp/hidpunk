@@ -7,9 +7,6 @@
 PLATFORM := osx
 MY_NAME := libhidpunk
 
-export MACOSX_DEPLOYMENT_TARGET=10.5
-
-
 export CC := gcc
 export CXX := g++
 export JAVAC := javac
@@ -26,18 +23,20 @@ export SCRATCH_DIR := scratch
 export LIB_PATH := scratch
 export LIB_OUTPUT := ../../lib
 
+export MACOSX_DEPLOYMENT_TARGET ?= 10.6
+export ARCH ?= -arch x86_64
+export SYS_ROOT ?= /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk
+
 
 DEBUG_CXXFLAGS := -D_REENTRANT -dynamic -fPIC -fno-common -Wall -g3
 DEBUG_LDFLAGS := -D_REENTRANT -dynamic -fPIC -fno-common -Wall -g3
 
-RELEASE_CXXFLAGS := -D_REENTRANT -dynamic -fPIC -fno-common -Wall -O3 -force_cpusubtype_ALL
-RELEASE_CXXFLAGS := $(RELEASE_CXXFLAGS) -isysroot /Developer/SDKs/MacOSX10.5.sdk 
-RELEASE_CXXFLAGS := $(RELEASE_CXXFLAGS) -arch i386 -arch x86_64
+RELEASE_CXXFLAGS := -D_REENTRANT -dynamic -fPIC -fno-common -Wall -Wstrict-aliasing=0 -O3 -force_cpusubtype_ALL
+RELEASE_CXXFLAGS := $(RELEASE_CXXFLAGS) -isysroot $(SYS_ROOT) $(ARCH)
 RELEASE_CXXFLAGS := $(RELEASE_CXXFLAGS) -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
 
-RELEASE_LDFLAGS := -D_REENTRANT -Wall
-RELEASE_LDFLAGS := $(RELEASE_CXXFLAGS) -arch i386 -arch x86_64
-RELEASE_LDFLAGS := $(RELEASE_LDFLAGS) -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk
+RELEASE_LDFLAGS := -D_REENTRANT -dynamic -fPIC -Wall
+RELEASE_LDFLAGS := $(RELEASE_LDFLAGS) -Wl,-syslibroot,$(SYS_ROOT) $(ARCH)
 RELEASE_LDFLAGS := $(RELEASE_LDFLAGS) -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
 
 export CXXFLAGS := $(RELEASE_CXXFLAGS)
@@ -49,7 +48,7 @@ FINAL_TARGET := $(OUTPUT_DIR)/$(MY_NAME).jnilib
 SOURCE_DIRS := hidpunk
 LIB_NAMES := 
 INCLUDE_NAMES := 
-EXT_INCLUDES := -I/System/Library/Frameworks/JavaVM.framework/Home/include 
+EXT_INCLUDES := 
 EXT_LIBS := -lc
 FRAMEWORKS := -framework CoreFoundation -framework Carbon -framework IOKit -framework JavaVM
 
@@ -92,9 +91,11 @@ $(OUTPUT_DIR)/%.h:
 	$(MAKE_DIR) $(OUTPUT_DIR)
 	$(COPY_FILE) $*.h $(OUTPUT_DIR)/$(notdir $*.h)
 
+
 .PHONY: _make_libs_
 _make_libs_:
 	@echo
+
 
 .PHONY: _make_some_room_
 _make_some_room_:
@@ -104,9 +105,11 @@ _make_some_room_:
 	@echo
 	@echo $(OBJECTS)
 
+
 .PHONY: clean
 clean:
 	$(ERASE_DIR) $(SCRATCH_DIR)
+
 
 .PHONY: _clean_me_/%
 _clean_me_/%:

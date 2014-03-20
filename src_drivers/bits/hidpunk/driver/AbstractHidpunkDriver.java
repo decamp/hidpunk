@@ -18,21 +18,6 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractHidpunkDriver<L> implements HidpunkDriver<L> {
 
-
-    protected static List<HidDevice> findHidDevices( Long vendorID, Long productID ) throws HidException {
-        HidManager manager = HidManager.getManager();
-        HidMatcher matcher = manager.createMatcher();
-
-        if( vendorID != null ) {
-            matcher.vendorID( vendorID );
-        }
-        if( productID != null ) {
-            matcher.productID( productID );
-        }
-        return manager.findDevices( matcher );
-    }
-
-
     protected final Logger mLogger = Logger.getLogger( getClass().getName() );
     protected final HidDevice mDevice;
     protected final Class<L> mListenerClass;

@@ -28,7 +28,7 @@ JNIEXPORT jlong JNICALL Java_bits_hidpunk_osx_OsxQueue_allocateQueue
     result = (*queue)->create(queue, 0, size);
     if(result) {
         char err[256];
-        sprintf(err, "Failed to create HID interface queue: 0x%lX", result);
+        sprintf(err, "Failed to create HID interface queue: 0x%X", result);
         hidpunk_throwIOKitException(env, err);
         (*queue)->Release(queue);
         return 0;
@@ -54,7 +54,7 @@ Java_bits_hidpunk_osx_OsxQueue_startQueue
     
     if(result) {
         char err[256];
-        sprintf(err, "Failed to start queue: %ld", result);
+        sprintf(err, "Failed to start queue: %d", result);
         hidpunk_throwIOKitException(env, err);
     }
 }
@@ -76,7 +76,7 @@ Java_bits_hidpunk_osx_OsxQueue_stopQueue
 
     if(result) {
         char err[256];
-        sprintf(err, "Failed to stop queue: 0x%lX", result);
+        sprintf(err, "Failed to stop queue: 0x%X", result);
         hidpunk_throwIOKitException(env, err);
     }
 }
@@ -103,7 +103,7 @@ Java_bits_hidpunk_osx_OsxQueue_clearQueue
     
     if(result != kIOReturnUnderrun) {
         char err[256];
-        sprintf(err, "Failed to clear queue: 0x%lX", result);
+        sprintf(err, "Failed to clear queue: 0x%X", result);
         hidpunk_throwIOKitException(env, err);
     }
 }
@@ -127,7 +127,7 @@ Java_bits_hidpunk_osx_OsxQueue_addElement
     
     if(result) {
         char err[256];
-        sprintf(err, "Failed to add element to queue: 0x%lX", result);
+        sprintf(err, "Failed to add element to queue: 0x%X", result);
         hidpunk_throwIOKitException(env, err);
     }
 }
@@ -148,7 +148,7 @@ Java_bits_hidpunk_osx_OsxQueue_dispose
     if(result) {
         if(result != kIOReturnNoDevice) {
             char err[256];
-            sprintf(err, "Failed to release queue 0: 0x%lX", result);
+            sprintf(err, "Failed to release queue 0: 0x%X", result);
             hidpunk_throwIOKitException(env, err);
             return;
         }
@@ -172,7 +172,7 @@ Java_bits_hidpunk_osx_OsxQueue_dispose
     if(result) {
         fflush(0);
         char err[256];
-        sprintf(err, "Failed to release queue: 0x%lX", result);
+        sprintf(err, "Failed to release queue: 0x%X", result);
         hidpunk_throwIOKitException(env, err);
     }
 }
