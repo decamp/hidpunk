@@ -1,8 +1,11 @@
 ### HidPunk Library
-HidPunk provides access to Human Interface Devices (HID) enabling
-Java developmers to create custom interfaces and user-space drivers
+HidPunk provides direct access to Human Interface Devices (HID).
+This enables Java developers to create custom interfaces and user-space drivers
 for a wide range of HIDs - including mice, keyboards and joysticks -
 without needing to write compiled code.
+
+Currently, the only implementation of the HidPunk API is written for 
+OS X 10.6 or above.
 
 The "src/drivers" contains several example pure-java drivers, including:
 - a "deltamouse" driver that provides raw mouse data that can be used for an FPS-type interface
@@ -12,8 +15,6 @@ The "src/drivers" contains several example pure-java drivers, including:
 
 Drivers support detection of device plugins and removals, and asynchronous event passing.
 
-Currently, the only implementation of the HidPunk API is written for 
-OSX 10.6 or above.
 
 ### Build:
 1. If the JNI code has been altered, you should first recompile the JNI library.  
