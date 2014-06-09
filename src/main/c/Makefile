@@ -19,7 +19,7 @@ export MAKE_LIB ?= g++ -dynamiclib -o
 export INDEX_LIB ?= @echo
 export MAKE ?= make
 
-export SCRATCH_DIR := scratch
+export SCRATCH_DIR := ../../../scratch/main/c/osx
 export LIB_PATH := scratch
 export LIB_OUTPUT := ../../lib
 
@@ -42,10 +42,10 @@ RELEASE_LDFLAGS := $(RELEASE_LDFLAGS) -mmacosx-version-min=$(MACOSX_DEPLOYMENT_T
 export CXXFLAGS := $(RELEASE_CXXFLAGS)
 export LDFLAGS := $(RELEASE_LDFLAGS)
 
-OUTPUT_DIR := ../../lib
+OUTPUT_DIR := ../../../lib
 FINAL_TARGET := $(OUTPUT_DIR)/$(MY_NAME).jnilib
 
-SOURCE_DIRS := hidpunk
+SOURCE_DIRS := osx
 LIB_NAMES := 
 INCLUDE_NAMES := 
 EXT_INCLUDES := 

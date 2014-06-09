@@ -1,13 +1,11 @@
-#Hidden files and emacs cruft
-**/.DS_Store
+# Respectively: hidden files other than '.gitignore' and emacs cruft files.
+.*
+!.gitignore
 *~
 
-.settings
-.classpath
-.project
-/build*/
-/dist/
-/resources_ext/
+# IDE project files. 
+*.iml
 
-/build_test
-/*.iml
+/scratch/
+/target/
+/ext/

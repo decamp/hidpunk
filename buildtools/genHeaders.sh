@@ -23,10 +23,10 @@ names[14]=bits.hidpunk.osx.OsxHidMatcher
 for i in {0..14}
 do
 # Generate header
-  javah -classpath build ${names[i]}
+  javah -classpath scratch/main/java ${names[i]}
 # Remove package cruft at beginning of name and move into place.
   f0=$(echo ${names[i]}|sed 's/\./_/g').h
-  f1=src_jni/osx/hidpunk/jni$(echo ${names[i]}|sed 's/.*\.//g').h
+  f1=src/main/c/osx/$(echo ${names[i]}|sed 's/.*\.//g').h
 # Replace invalid <jni.h> with <JavaVM/jni.h> and move into place.
   cat ${f0} | sed s_^\#include\ \<jni\.h\>_\#include\ \<JavaVM\\/jni.h\>_ > ${f1}
   rm ${f0}
